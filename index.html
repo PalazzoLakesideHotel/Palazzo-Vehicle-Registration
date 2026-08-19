@@ -40,10 +40,44 @@ button{width:100%;padding:15px;border:0;border-radius:10px;background:var(--gold
 <footer class="footer">Palazzo Lakeside Hotel • Kissimmee, Florida</footer>
 </div></div>
 <script>
-document.getElementById('vehicleForm').addEventListener('submit',e=>{
-e.preventDefault();
-const x={timestamp:new Date().toLocaleString(),room:room.value.trim(),plate:plate.value.trim().toUpperCase(),make:make.value.trim(),color:color.value.trim(),state:state.value.trim()};
-const r=JSON.parse(localStorage.getItem('palazzoVehicleRegistrations')||'[]');r.push(x);localStorage.setItem('palazzoVehicleRegistrations',JSON.stringify(r));
-e.target.style.display='none';document.getElementById('success').style.display='block';
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkBmoMEFiOqnts0YTqh-lcohrl0caZgJfvslg30uylpv1PK7r1ja01gST40ETRSeCO/exec";
+
+document.getElementById("vehicleForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+
+  const data = {
+    room: document.getElementById("room").value.trim(),
+    licensePlate: document.getElementById("plate").value.trim().toUpperCase(),
+    vehicleMake: document.getElementById("make").value.trim(),
+    vehicleColor: document.getElementById("color").value.trim(),
+    plateState: document.getElementById("state").value.trim()
+  };
+
+  const iframe = document.createElement("iframe");
+  iframe.name = "hiddenFrame";
+  iframe.style.display = "none";
+  document.body.appendChild(iframe);
+
+  const postForm = document.createElement("form");
+  postForm.method = "POST";
+  postForm.action = SCRIPT_URL;
+  postForm.target = "hiddenFrame";
+  postForm.style.display = "none";
+
+  Object.keys(data).forEach(function(key) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = key;
+    input.value = data[key];
+    postForm.appendChild(input);
+  });
+
+  document.body.appendChild(postForm);
+  postForm.submit();
+
+  form.style.display = "none";
+  document.getElementById("success").style.display = "block";
 });
-</script></body></html>
+</script>
